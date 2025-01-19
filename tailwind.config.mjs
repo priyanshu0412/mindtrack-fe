@@ -8,8 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primaryColor: "#004250",
+        secondaryColor: "#88BBD8",
+        thirdColor: "#F9C54B"
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
