@@ -7,7 +7,7 @@ import React from 'react'
 const Navbar = () => {
     return (
         <>
-            <div className='w-full bg-black text-white h-20 flex items-center justify-evenly'>
+            <div className='w-full bg-gray-300 text-black h-20 flex items-center justify-evenly '>
                 <Link href={"/"}>
                     Home
                 </Link>
@@ -16,6 +16,12 @@ const Navbar = () => {
                 </Link>
                 <Link href={"/signup"}>
                     Signup
+                </Link>
+                <Link href={"/reset-password"}>
+                    Reset Password
+                </Link>
+                <Link href={"/verifyOtp"}>
+                    Verify OTP
                 </Link>
             </div>
         </>
