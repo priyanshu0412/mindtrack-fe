@@ -1,9 +1,14 @@
+import { FeaturesSection, HeroSectionDiary, HeroSectionTodo } from '@/components'
 import React from 'react'
+
+// -------------------------------
 
 const Home = () => {
   return (
     <>
-      This is Home Page
+      <HeroSectionTodo />
+      <HeroSectionDiary />
+      <FeaturesSection />
     </>
   )
 }

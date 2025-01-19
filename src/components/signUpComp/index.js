@@ -4,15 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-// ----------------------------------
-
 const SignUp = () => {
     return (
         <>
-            <div className="flex min-h-screen items-center justify-center bg-gray-300 px-6 py-12">
-                <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg transform transition-all hover:scale-[1.02]">
+            <div className="flex min-h-screen items-center justify-center bg-primaryColor px-6 py-12">
+                <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
                     <div className="text-center w-full flex justify-center flex-col items-center">
-                        <div >
+                        <div>
                             <Image
                                 width={50}
                                 height={50}
@@ -21,10 +19,10 @@ const SignUp = () => {
                                 src={Logo}
                             />
                         </div>
-                        <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+                        <h2 className="mt-6 text-3xl font-extrabold text-thirdColor">
                             Create Your Account!
                         </h2>
-                        <p className="mt-2 text-sm text-gray-600">
+                        <p className="mt-2 text-sm text-gray-700">
                             Sign up to join our community
                         </p>
                     </div>
@@ -32,7 +30,7 @@ const SignUp = () => {
                         <div>
                             <label
                                 htmlFor="username"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-secondaryColor"
                             >
                                 Username
                             </label>
@@ -41,14 +39,14 @@ const SignUp = () => {
                                 name="username"
                                 id="username"
                                 required
-                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-thirdColor focus:border-thirdColor transition-all"
                                 placeholder="Enter your username"
                             />
                         </div>
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-secondaryColor"
                             >
                                 Email address
                             </label>
@@ -58,14 +56,14 @@ const SignUp = () => {
                                 id="email"
                                 autoComplete="email"
                                 required
-                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-thirdColor focus:border-thirdColor transition-all"
                                 placeholder="name@example.com"
                             />
                         </div>
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-secondaryColor"
                             >
                                 Password
                             </label>
@@ -75,14 +73,14 @@ const SignUp = () => {
                                 id="password"
                                 autoComplete="new-password"
                                 required
-                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-thirdColor focus:border-thirdColor transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
                         <div>
                             <label
                                 htmlFor="confirm-password"
-                                className="block text-sm font-medium text-gray-700"
+                                className="block text-sm font-medium text-secondaryColor"
                             >
                                 Confirm Password
                             </label>
@@ -92,33 +90,32 @@ const SignUp = () => {
                                 id="confirm-password"
                                 autoComplete="new-password"
                                 required
-                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-thirdColor focus:border-thirdColor transition-all"
                                 placeholder="••••••••"
                             />
                         </div>
                         <div>
                             <button
                                 type="submit"
-                                className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-indigo-500 transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                className="flex w-full justify-center rounded-md bg-thirdColor px-4 py-2 text-sm font-semibold text-primaryColor shadow-md hover:bg-secondaryColor hover:text-white transition duration-300 focus:ring-2 focus:ring-thirdColor focus:ring-offset-2"
                             >
                                 Sign Up
                             </button>
                         </div>
                     </form>
-                    <p className="mt-6 text-center text-sm text-gray-500">
+                    <p className="mt-6 text-center text-sm text-gray-700">
                         Already have an account?
                         <Link
                             href="/login"
-                            className="font-medium pl-2 text-indigo-600 hover:underline"
+                            className="font-medium pl-2 text-thirdColor hover:underline"
                         >
                             Login
                         </Link>
                     </p>
                 </div>
             </div>
-
         </>
-    )
-}
+    );
+};
 
-export default SignUp
+export default SignUp;
