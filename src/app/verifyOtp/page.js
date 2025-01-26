@@ -1,3 +1,4 @@
+"use client"
 import { VerifyOtpComp } from '@/components'
 import React from 'react'
 

@@ -1,3 +1,4 @@
+"use client"
 import { ResetPassComp } from '@/components'
 import React from 'react'
 

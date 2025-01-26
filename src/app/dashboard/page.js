@@ -1,14 +1,14 @@
 "use client"
 import React from 'react'
 
-// -------------------------------
+// ------------------------------------
 
-const DashBoardPage = () => {
+const DashboardPage = () => {
     return (
         <>
-            this is My dashboard Page
+            This is Dashboard Page
         </>
     )
 }
 
-export default DashBoardPage
+export default DashboardPage

@@ -12,35 +12,32 @@ const VerifyOtpComp = () => {
     const [error, setError] = useState("");
     const inputRefs = useRef([]);
 
-    // Extract email from the authToken cookie
     const getEmailFromToken = () => {
         const cookieString = document.cookie
             .split("; ")
             .find((row) => row.startsWith("authToken="));
-        console.log("Cookie string:", cookieString); // Log the cookie string
+        console.log("Cookie string:", cookieString);
 
         if (cookieString) {
             const token = cookieString.split("=")[1];
-            console.log("Token:", token); // Log the token
 
             try {
-                // Check if the token is valid and has the required fields
                 const decoded = jwt.decode(token);
-                console.log("Decoded token:", decoded); // Log the decoded token
+                console.log("Decoded token:", decoded);
 
                 if (decoded && decoded.email) {
-                    return decoded.email; // Return the email if available
+                    return decoded.email;
                 } else {
                     console.error("Email not found in token.");
                     return "";
                 }
             } catch (err) {
-                console.error("Error decoding token:", err); // Log decoding errors
+                console.error("Error decoding token:", err);
                 return "";
             }
         }
 
-        console.error("authToken cookie not found."); // Log missing cookie
+        console.error("authToken cookie not found.");
         return "";
     };
 
@@ -49,14 +46,14 @@ const VerifyOtpComp = () => {
 
     console.log("email", email)
 
-    // useEffect(() => {
-    //     if (timer > 0) {
-    //         const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
-    //         return () => clearInterval(interval);
-    //     } else {
-    //         setResendDisabled(false);
-    //     }
-    // }, [timer]);
+    useEffect(() => {
+        if (timer > 0) {
+            const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+            return () => clearInterval(interval);
+        } else {
+            setResendDisabled(false);
+        }
+    }, [timer]);
 
     const handleVerifyOTP = async () => {
         if (otp.join("").length !== 6 || !/^\d{6}$/.test(otp.join(""))) {
@@ -68,7 +65,7 @@ const VerifyOtpComp = () => {
         const token = document.cookie
             .split("; ")
             .find((row) => row.startsWith("authToken="))
-            ?.split("=")[1]; // Extract the token
+            ?.split("=")[1];
 
         if (!token) {
             setError("No token found. Please log in again.");
@@ -81,13 +78,12 @@ const VerifyOtpComp = () => {
                 { email, otp: otp.join("") },
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`, // Send token in Authorization header
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
 
             if (response.status === 200) {
-                // OTP verified, redirect to dashboard
                 window.location.href = "/dashboard";
             }
         } catch (err) {
@@ -101,7 +97,6 @@ const VerifyOtpComp = () => {
         setTimer(60);
         setResendDisabled(true);
         console.log("OTP Resent");
-        // You can also implement OTP resend logic here.
     };
 
     const handleOtpChange = (e, index) => {
