@@ -1,3 +1,4 @@
+"use client"
 import { ForgotPassComp } from '@/components'
 import React from 'react'
 

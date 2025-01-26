@@ -1,5 +1,9 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import jwt from "jsonwebtoken";
+
+// ---------------------------------------
 
 const VerifyOtpComp = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -7,6 +11,40 @@ const VerifyOtpComp = () => {
     const [resendDisabled, setResendDisabled] = useState(true);
     const [error, setError] = useState("");
     const inputRefs = useRef([]);
+
+    const getEmailFromToken = () => {
+        const cookieString = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("authToken="));
+        console.log("Cookie string:", cookieString);
+
+        if (cookieString) {
+            const token = cookieString.split("=")[1];
+
+            try {
+                const decoded = jwt.decode(token);
+                console.log("Decoded token:", decoded);
+
+                if (decoded && decoded.email) {
+                    return decoded.email;
+                } else {
+                    console.error("Email not found in token.");
+                    return "";
+                }
+            } catch (err) {
+                console.error("Error decoding token:", err);
+                return "";
+            }
+        }
+
+        console.error("authToken cookie not found.");
+        return "";
+    };
+
+
+    const email = getEmailFromToken();
+
+    console.log("email", email)
 
     useEffect(() => {
         if (timer > 0) {
@@ -17,21 +55,47 @@ const VerifyOtpComp = () => {
         }
     }, [timer]);
 
-    const handleVerifyOTP = () => {
+    const handleVerifyOTP = async () => {
         if (otp.join("").length !== 6 || !/^\d{6}$/.test(otp.join(""))) {
             setError("Please enter a valid 6-digit OTP.");
             return;
         }
 
         setError("");
-        // Logic to verify OTP
-        console.log("OTP Verified:", otp.join(""));
+        const token = document.cookie
+            .split("; ")
+            .find((row) => row.startsWith("authToken="))
+            ?.split("=")[1];
+
+        if (!token) {
+            setError("No token found. Please log in again.");
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/auth/verify-otp",
+                { email, otp: otp.join("") },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                window.location.href = "/dashboard";
+            }
+        } catch (err) {
+            console.error("Error verifying OTP:", err);
+            setError(err.response?.data?.message || "Failed to verify OTP.");
+        }
     };
+
 
     const handleResendOTP = () => {
         setTimer(60);
         setResendDisabled(true);
-        // Logic to resend OTP
         console.log("OTP Resent");
     };
 
@@ -40,7 +104,7 @@ const VerifyOtpComp = () => {
         if (/^\d$/.test(value)) {
             otp[index] = value;
             setOtp([...otp]);
-            if (index < 5) inputRefs.current[index + 1].focus(); // Move to next input
+            if (index < 5) inputRefs.current[index + 1].focus();
         } else {
             otp[index] = "";
             setOtp([...otp]);
@@ -71,7 +135,7 @@ const VerifyOtpComp = () => {
                         <input
                             type="email"
                             id="email"
-                            value="user@example.com"
+                            value={email}
                             disabled
                             className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-thirdColor focus:border-thirdColor transition-all"
                         />
