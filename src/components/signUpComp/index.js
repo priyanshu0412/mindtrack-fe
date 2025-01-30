@@ -8,12 +8,15 @@ import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import { signUpValidationSchema } from "@/validation/signUpValidation";
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "@/store/authSlice";
 
 // ----------------------------------------
 
 const SignUp = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const dispatch = useDispatch()
 
     const formik = useFormik({
         initialValues: {
@@ -31,6 +34,12 @@ const SignUp = () => {
                     values,
                     { withCredentials: true }
                 );
+                dispatch(setAuthUser({
+                    userName: response?.data?.data?.userName,
+                    email: response?.data?.data?.email,
+                    isVerified: response?.data?.data?.isVerified,
+                    _id: response?.data?.data?._id
+                }));
                 Swal.fire({
                     title: "Success!",
                     text: response.data.message,
