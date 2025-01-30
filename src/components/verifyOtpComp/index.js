@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "@/store/authSlice";
 
 // ---------------------------------------
 
@@ -11,19 +13,21 @@ const VerifyOtpComp = () => {
     const [resendDisabled, setResendDisabled] = useState(true);
     const [error, setError] = useState("");
     const inputRefs = useRef([]);
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.auth.user);
 
     const getEmailFromToken = () => {
         const cookieString = document.cookie
             .split("; ")
             .find((row) => row.startsWith("authToken="));
-        console.log("Cookie string:", cookieString);
+
 
         if (cookieString) {
             const token = cookieString.split("=")[1];
 
             try {
                 const decoded = jwt.decode(token);
-                console.log("Decoded token:", decoded);
+
 
                 if (decoded && decoded.email) {
                     return decoded.email;
@@ -44,7 +48,7 @@ const VerifyOtpComp = () => {
 
     const email = getEmailFromToken();
 
-    console.log("email", email)
+
 
     useEffect(() => {
         if (timer > 0) {
@@ -84,6 +88,7 @@ const VerifyOtpComp = () => {
             );
 
             if (response.status === 200) {
+                dispatch(setAuthUser({ ...user, isVerified: true }));
                 window.location.href = "/dashboard";
             }
         } catch (err) {

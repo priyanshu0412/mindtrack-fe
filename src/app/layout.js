@@ -1,3 +1,4 @@
+import ClientProvider from "@/hoc/ClientProvider";
 import "./globals.css";
 import { Footer, Navbar } from "@/components";
 
@@ -12,9 +13,11 @@ export default function RootLayout({ children }) {
       <head>
       </head>
       <body>
-        <Navbar />
-        {children}
-        <Footer />
+        <ClientProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </ClientProvider>
       </body>
     </html>
   );
