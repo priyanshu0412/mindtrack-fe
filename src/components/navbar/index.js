@@ -2,11 +2,19 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import Icon from "../Icon";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/store/authSlice";
 
 // ------------------------------------------------
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const user = useSelector((state) => state.auth.user);
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(logout());
+    };
 
     return (
         <>
@@ -30,26 +38,35 @@ const Navbar = () => {
                             <Link href="/diary" className="hover:text-secondaryColor hover:underline font-semibold transition duration-300">
                                 Diary
                             </Link>
-                            <Link href="/about" className="hover:text-secondaryColor hover:underline font-semibold transition duration-300">
+                            <Link href="/about-me" className="hover:text-secondaryColor hover:underline font-semibold transition duration-300">
                                 About
                             </Link>
                             <Link href="/contact-us" className="hover:text-secondaryColor hover:underline font-semibold transition duration-300">
                                 ContactUs
                             </Link>
                         </div>
-                        <div className="hidden md:flex space-x-4">
-                            <Link href={"/login"} className="w-fit">
-                                <button className="px-5 py-2 bg-transparent border-2 border-thirdColor text-thirdColor rounded hover:bg-thirdColor hover:text-primaryColor transition duration-300">
-                                    Login
-                                </button>
-                            </Link>
-                            <Link href={"/signup"} className="w-fit">
-                                <button className="px-5 py-2 bg-thirdColor text-primaryColor rounded hover:bg-secondaryColor hover:text-white transition duration-300">
-                                    Sign Up
-                                </button>
-                            </Link>
-                        </div>
-
+                        {
+                            user?.isVerified ? (
+                                <div className="hidden md:flex">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="px-5 py-2 bg-transparent border-2 border-thirdColor text-thirdColor rounded hover:bg-thirdColor hover:text-primaryColor transition duration-300">
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : <div className="hidden md:flex space-x-4">
+                                <Link href={"/login"} className="w-fit">
+                                    <button className="px-5 py-2 bg-transparent border-2 border-thirdColor text-thirdColor rounded hover:bg-thirdColor hover:text-primaryColor transition duration-300">
+                                        Login
+                                    </button>
+                                </Link>
+                                <Link href={"/signup"} className="w-fit">
+                                    <button className="px-5 py-2 bg-thirdColor text-primaryColor rounded hover:bg-secondaryColor hover:text-white transition duration-300">
+                                        Sign Up
+                                    </button>
+                                </Link>
+                            </div>
+                        }
                         {/* Mobile Hamburger Icon */}
                         <div className="md:hidden flex items-center">
                             <button

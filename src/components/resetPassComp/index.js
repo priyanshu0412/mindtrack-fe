@@ -1,23 +1,64 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import * as Yup from "yup";
+import { signUpValidationSchema } from "@/validation/signUpValidation";
 
-const ResetPassComp = () => {
+const passwordValidationSchema = Yup.object({
+    newPassword: signUpValidationSchema.fields.password,
+    confirmPassword: Yup.string()
+        .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+        .required("Confirm Password is required"),
+});
+
+const ResetPassComp = ({ token }) => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const router = useRouter();
 
-    const handleSavePassword = () => {
-        if (newPassword !== confirmPassword) {
-            setError("Passwords do not match.");
-            return;
-        }
-        if (newPassword.length < 6) {
-            setError("Password must be at least 6 characters long.");
-            return;
-        }
+    const handleSavePassword = async () => {
+        try {
+            await passwordValidationSchema.validate({ newPassword, confirmPassword }, { abortEarly: false });
 
-        setError("");
-        console.log("New password saved:", newPassword);
+            setError("");
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BE_URL}/auth/reset-password`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token, newPassword }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Something went wrong.");
+            }
+
+            Swal.fire({
+                icon: "success",
+                title: "Password Updated",
+                text: "Your password has been successfully reset!",
+                confirmButtonColor: "#004250",
+            }).then(() => {
+                router.push("/login");
+            });
+
+        } catch (err) {
+            if (err.inner) {
+                setError(err.inner.map((e) => e.message).join(" "));
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: err.message,
+                    confirmButtonColor: "#004250",
+                });
+            }
+        }
     };
 
     return (

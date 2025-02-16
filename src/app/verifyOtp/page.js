@@ -1,5 +1,5 @@
 "use client"
-import { VerifyOtpComp } from '@/components'
+import { PublicUserLoginRoute, VerifyOtpComp } from '@/components'
 import React from 'react'
 
 // ----------------------------------
@@ -7,7 +7,9 @@ import React from 'react'
 const VerifyOtpPage = () => {
     return (
         <>
-            <VerifyOtpComp />
+            <PublicUserLoginRoute>
+                <VerifyOtpComp />
+            </PublicUserLoginRoute>
         </>
     )
 }

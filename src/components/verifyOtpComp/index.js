@@ -1,11 +1,11 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import jwt from "jsonwebtoken";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/store/authSlice";
-
-// ---------------------------------------
+import Swal from "sweetalert2";
 
 const VerifyOtpComp = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -13,7 +13,7 @@ const VerifyOtpComp = () => {
     const [resendDisabled, setResendDisabled] = useState(true);
     const [error, setError] = useState("");
     const inputRefs = useRef([]);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
 
     const getEmailFromToken = () => {
@@ -21,34 +21,21 @@ const VerifyOtpComp = () => {
             .split("; ")
             .find((row) => row.startsWith("authToken="));
 
-
         if (cookieString) {
             const token = cookieString.split("=")[1];
-
             try {
                 const decoded = jwt.decode(token);
-
-
-                if (decoded && decoded.email) {
-                    return decoded.email;
-                } else {
-                    console.error("Email not found in token.");
-                    return "";
-                }
+                return decoded?.email || "";
             } catch (err) {
                 console.error("Error decoding token:", err);
                 return "";
             }
         }
-
         console.error("authToken cookie not found.");
         return "";
     };
 
-
     const email = getEmailFromToken();
-
-
 
     useEffect(() => {
         if (timer > 0) {
@@ -71,7 +58,12 @@ const VerifyOtpComp = () => {
             .find((row) => row.startsWith("authToken="))
             ?.split("=")[1];
 
-        if (!token) {
+        if (!token || user.email !== email) {
+            Swal.fire({
+                icon: "error",
+                title: "Something is wrong!",
+                text: "Kindly log in again.",
+            });
             setError("No token found. Please log in again.");
             return;
         }
@@ -79,7 +71,7 @@ const VerifyOtpComp = () => {
         try {
             const response = await axios.post(
                 "http://localhost:8080/auth/verify-otp",
-                { email, otp: otp.join("") },
+                { email: user.email, otp: otp.join("") },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -92,16 +84,26 @@ const VerifyOtpComp = () => {
                 window.location.href = "/dashboard";
             }
         } catch (err) {
-            console.error("Error verifying OTP:", err);
+            if (err.response?.status === 400) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Invalid OTP",
+                    text: "The OTP you entered is incorrect. Try again or request a new OTP.",
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Something went wrong",
+                    text: "Please try again later.",
+                });
+            }
             setError(err.response?.data?.message || "Failed to verify OTP.");
         }
     };
 
-
     const handleResendOTP = () => {
         setTimer(60);
         setResendDisabled(true);
-        console.log("OTP Resent");
     };
 
     const handleOtpChange = (e, index) => {
@@ -140,7 +142,7 @@ const VerifyOtpComp = () => {
                         <input
                             type="email"
                             id="email"
-                            value={email}
+                            value={user?.email}
                             disabled
                             className="mt-2 block w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-gray-900 shadow-sm focus:ring-thirdColor focus:border-thirdColor transition-all"
                         />
@@ -164,7 +166,7 @@ const VerifyOtpComp = () => {
                         <button
                             type="button"
                             onClick={handleVerifyOTP}
-                            className="flex w-full justify-center rounded-md bg-thirdColor px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-secondaryColor hover:text-white transition-all focus:ring-2 focus:ring-thirdColor focus:ring-offset-2"
+                            className="flex w-full justify-center rounded-md bg-thirdColor px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-secondaryColor transition-all focus:ring-2 focus:ring-thirdColor focus:ring-offset-2"
                         >
                             Verify OTP
                         </button>
@@ -174,18 +176,11 @@ const VerifyOtpComp = () => {
                             type="button"
                             onClick={handleResendOTP}
                             disabled={resendDisabled}
-                            className={`font-medium ${resendDisabled
-                                ? "text-gray-400 cursor-not-allowed"
-                                : "text-thirdColor hover:underline"
-                                }`}
+                            className={`font-medium ${resendDisabled ? "text-gray-400 cursor-not-allowed" : "text-thirdColor hover:underline"}`}
                         >
                             Resend OTP
                         </button>
-                        {resendDisabled && (
-                            <p className="text-sm text-secondaryColor mt-2">
-                                Resend available in {timer} seconds
-                            </p>
-                        )}
+                        {resendDisabled && <p className="text-sm text-secondaryColor mt-2">Resend available in {timer} seconds</p>}
                     </div>
                 </form>
             </div>

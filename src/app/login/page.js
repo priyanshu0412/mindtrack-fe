@@ -1,5 +1,5 @@
 "use client"
-import { Login } from '@/components'
+import { Login, PublicUserLoginRoute } from '@/components'
 import React from 'react'
 
 // -------------------------------------
@@ -7,7 +7,9 @@ import React from 'react'
 const LoginPage = () => {
     return (
         <>
-            <Login />
+            <PublicUserLoginRoute>
+                <Login />
+            </PublicUserLoginRoute>
         </>
     )
 }
