@@ -49,25 +49,25 @@ const Footer = () => {
                         <div className="flex flex-col items-center sm:items-start">
                             <h3 className="text-xl font-semibold text-white mb-3">Follow Us</h3>
                             <div className="flex items-center mb-2 space-x-4">
-                                <a href="#" className="text-white hover:text-secondaryColor">
+                                <a href="#" className="text-white hover:text-secondaryColor flex">
                                     <Icon icon="mdi:facebook" width={24} height={24} />
                                     <span className="ml-2">Facebook</span>
                                 </a>
                             </div>
                             <div className="flex items-center mb-2 space-x-4">
-                                <a href="#" className="text-white hover:text-secondaryColor">
+                                <a href="#" className="text-white hover:text-secondaryColor flex">
                                     <Icon icon="mdi:twitter" width={24} height={24} />
                                     <span className="ml-2">Twitter</span>
                                 </a>
                             </div>
                             <div className="flex items-center mb-2 space-x-4">
-                                <a href="#" className="text-white hover:text-secondaryColor">
+                                <a href="#" className="text-white hover:text-secondaryColor flex">
                                     <Icon icon="mdi:linkedin" width={24} height={24} />
                                     <span className="ml-2">LinkedIn</span>
                                 </a>
                             </div>
                             <div className="flex items-center mb-2 space-x-4">
-                                <a href="#" className="text-white hover:text-secondaryColor">
+                                <a href="#" className="text-white hover:text-secondaryColor flex">
                                     <Icon icon="mdi:instagram" width={24} height={24} />
                                     <span className="ml-2">Instagram</span>
                                 </a>

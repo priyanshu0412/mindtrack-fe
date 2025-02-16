@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const ForgotPassComp = () => {
     const [emailOrUsername, setEmailOrUsername] = useState("");
@@ -16,15 +17,94 @@ const ForgotPassComp = () => {
         }
     }, [isTimerActive, timer]);
 
-    const handleSendLink = () => {
-        console.log("Reset password link sent to:", emailOrUsername);
-        setIsTimerActive(true);
-        setTimer(60);
+    const handleSendLink = async () => {
+        if (!emailOrUsername.trim()) {
+            Swal.fire({
+                icon: "warning",
+                title: "Required",
+                text: "Email or Username is required.",
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BE_URL}/auth/forgot-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: emailOrUsername }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Reset password link has been sent to your email.",
+                });
+                setIsTimerActive(true);
+                setTimer(60);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.message || "User with this email is not found.",
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Request Failed",
+                text: "Something went wrong. Please try again later.",
+            });
+        }
     };
 
-    const handleResendLink = () => {
-        console.log("Resent reset password link to:", emailOrUsername);
-        setTimer(60);
+    const handleResendLink = async () => {
+        if (!emailOrUsername.trim()) {
+            Swal.fire({
+                icon: "warning",
+                title: "Required",
+                text: "Email or Username is required.",
+            });
+            return;
+        }
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BE_URL}/auth/forgot-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: emailOrUsername }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Reset password link has been resent to your email.",
+                });
+                setIsTimerActive(true);
+                setTimer(60);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.message || "User with this email is not found.",
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Request Failed",
+                text: "Something went wrong. Please try again later.",
+            });
+        }
     };
 
     return (
@@ -68,8 +148,7 @@ const ForgotPassComp = () => {
                 </form>
                 {isTimerActive && (
                     <p className="mt-6 text-center text-sm text-gray-500">
-                        Resend link in{" "}
-                        <span className="font-bold text-thirdColor">{timer}s</span>
+                        Resend link in <span className="font-bold text-thirdColor">{timer}s</span>
                     </p>
                 )}
                 {timer === 0 && (
