@@ -45,7 +45,7 @@ const HeroSectionTodo = () => {
 
                     {/* Call to Action Button */}
                     <Link href="/todo">
-                        <button className="mt-8 px-8 py-3 bg-thirdColor text-black font-semibold rounded hover:bg-white transition duration-300">
+                        <button className="mt-8 px-8 py-3 bg-secondaryColor text-black font-semibold rounded hover:bg-white transition duration-300">
                             Start Organizing
                         </button>
                     </Link>
