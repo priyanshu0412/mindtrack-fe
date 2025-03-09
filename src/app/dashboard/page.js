@@ -1,5 +1,5 @@
 "use client"
-import { ProtectedRoute } from '@/components'
+import { DashBoardComp, ProtectedRoute } from '@/components'
 import React from 'react'
 
 // ------------------------------------
@@ -8,7 +8,7 @@ const DashboardPage = () => {
     return (
         <>
             <ProtectedRoute>
-                This is Dashboard Page
+                <DashBoardComp />
             </ProtectedRoute>
         </>
     )
