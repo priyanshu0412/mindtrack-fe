@@ -81,7 +81,7 @@ const VerifyOtpComp = () => {
 
             if (response.status === 200) {
                 dispatch(setAuthUser({ ...user, isVerified: true }));
-                window.location.href = "/dashboard";
+                window.location.href = "/todo";
             }
         } catch (err) {
             if (err.response?.status === 400) {

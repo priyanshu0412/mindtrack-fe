@@ -1,11 +1,11 @@
-import { ProtectedRoute } from '@/components'
+import { ProtectedRoute, TodoComponent } from '@/components'
 import React from 'react'
 
 const TodoPage = () => {
     return (
         <>
             <ProtectedRoute>
-                This is Todo Page
+                <TodoComponent />
             </ProtectedRoute>
         </>
     )

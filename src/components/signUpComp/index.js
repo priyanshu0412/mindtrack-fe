@@ -35,11 +35,13 @@ const SignUp = () => {
                     { withCredentials: true }
                 );
                 dispatch(setAuthUser({
-                    userName: response?.data?.data?.userName,
-                    email: response?.data?.data?.email,
-                    isVerified: response?.data?.data?.isVerified,
-                    _id: response?.data?.data?._id
+                    userName: response?.data?.data?.user?.userName,
+                    email: response?.data?.data?.user?.email,
+                    isVerified: response?.data?.data?.user?.isVerified,
+                    _id: response?.data?.data?.user?._id,
+                    token: response?.data?.data?.token
                 }));
+                console.log("res", response?.data?.data?.user?.email)
                 Swal.fire({
                     title: "Success!",
                     text: response.data.message,

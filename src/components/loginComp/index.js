@@ -35,10 +35,11 @@ const Login = () => {
                     { withCredentials: true }
                 );
                 dispatch(setAuthUser({
-                    userName: response?.data?.data?.userName,
-                    email: response?.data?.data?.email,
+                    userName: response?.data?.data?.user?.userName,
+                    email: response?.data?.data?.user?.email,
                     isVerified: true,
-                    _id: response?.data?.data?._id
+                    _id: response?.data?.data?.user?._id,
+                    token: response?.data?.data?.token
                 }));
                 Swal.fire({
                     title: "Login Successfully",
@@ -46,7 +47,7 @@ const Login = () => {
                     icon: "success",
                     confirmButtonText: "OK",
                 });
-                router.push("/dashboard");
+                router.push("/todo");
             } catch (err) {
                 Swal.fire({
                     title: "Error!",

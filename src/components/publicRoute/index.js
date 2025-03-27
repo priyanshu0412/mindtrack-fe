@@ -9,7 +9,7 @@ const PublicUserLoginRoute = ({ children }) => {
 
     useEffect(() => {
         if (user?.isVerified) {
-            router.push("/dashboard"); // Redirect verified users
+            router.push("/todo"); // Redirect verified users
         }
     }, [user, router]);
 
