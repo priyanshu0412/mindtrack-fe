@@ -1,10 +1,14 @@
-import { DiaryComponent } from '@/components'
+import { DiaryComponent, ProtectedRoute } from '@/components'
 import React from 'react'
+
+// -------------------------------------
 
 const DiaryPage = () => {
     return (
         <>
-            <DiaryComponent />
+            <ProtectedRoute>
+                <DiaryComponent />
+            </ProtectedRoute>
         </>
     )
 }

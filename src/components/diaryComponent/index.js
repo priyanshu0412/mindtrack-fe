@@ -11,6 +11,7 @@ import Icon from "../Icon";
 // ---------------------------------------------
 
 const DiaryComponent = () => {
+
     const user = useSelector((state) => state.auth.user);
     const token = user?.token;
 
@@ -118,15 +119,15 @@ const DiaryComponent = () => {
     };
 
     return (
-        <div className="w-full flex flex-col items-center min-h-screen bg-secondaryColor p-6">
-            <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-6">
+        <div className="w-full flex flex-col items-center min-h-screen p-6">
+            <div className="w-full max-w-3xl bg-primaryColor text-white shadow-lg rounded-xl p-6">
                 <h1 className="text-3xl font-semibold mb-4">Write Your Diary</h1>
                 <input
                     type="text"
                     placeholder="Enter Title..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full border p-2 rounded-md mb-4"
+                    className="w-full border p-2 rounded-md mb-4 text-black"
                 />
                 <Editor
                     apiKey="628zzwct6qbsggq5ruwyf8nanp3nm4ip7apzfofv7p1ekkyq"
@@ -141,7 +142,7 @@ const DiaryComponent = () => {
                     }}
                 />
                 <div className="flex justify-end gap-4 mt-6">
-                    {isEditing && (title || content) && (
+                    {(title || content) && (
                         <button onClick={handleCancel} className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
                     )}
                     <button onClick={handleSaveOrUpdate} className="bg-thirdColor hover:bg-yellow-500 text-black px-4 py-2 rounded-lg">
@@ -149,16 +150,22 @@ const DiaryComponent = () => {
                     </button>
                 </div>
             </div>
-            <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-6 mt-6">
-                <h2 className="text-2xl font-semibold mb-4">Your Diaries</h2>
+            <div className="w-full max-w-3xl bg-primaryColor shadow-lg rounded-xl p-6 mt-6">
+                <h2 className="text-2xl font-semibold mb-4 text-thirdColor">Your Diaries</h2>
                 <ul className="space-y-4">
                     {diaries.map((diary) => (
-                        <li key={diary._id} className="p-4 border rounded-lg flex justify-between items-center">
+                        <li key={diary._id} className="p-4 border rounded-lg flex justify-between items-center bg-white text-black flex-col sm:flex-row gap-4 sm:gap-0 ">
                             <span className="font-medium">{diary.title}</span>
                             <div className="flex gap-2">
-                                <button onClick={() => handleView(diary)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg"><Icon icon={"lets-icons:view"} /></button>
-                                <button onClick={() => handleEdit(diary)} className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg"><Icon icon={"tabler:edit"} /></button>
-                                <button onClick={() => handleDelete(diary._id)} className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg"><Icon icon={"ic:baseline-delete"} /></button>
+                                <button onClick={() => handleView(diary)} className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg">
+                                    <Icon className={"text-lg"} icon={"lets-icons:view"} />
+                                </button>
+                                <button onClick={() => handleEdit(diary)} className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg">
+                                    <Icon className={"text-lg"} icon={"tabler:edit"} />
+                                </button>
+                                <button onClick={() => handleDelete(diary._id)} className="bg-red-500 hover:bg-red-600 text-white p-4 rounded-lg">
+                                    <Icon className={"text-lg"} icon={"ic:baseline-delete"} />
+                                </button>
                             </div>
                         </li>
                     ))}
