@@ -98,19 +98,36 @@ const Navbar = () => {
                             <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href="/contact-us" className="block hover:text-secondaryColor font-semibold transition duration-300">
                                 ContactUs
                             </Link>
-                            <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href={"/login"} className="w-fit">
-                                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="block w-full text-left px-4 py-2 mt-2 border-2 border-thirdColor text-thirdColor rounded hover:bg-thirdColor hover:text-primaryColor transition duration-300">
-                                    Login
+
+                            {/* Auth Buttons */}
+                            {user?.isVerified ? (
+                                <button
+                                    onClick={() => {
+                                        handleLogout();
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className="block w-full text-left px-4 py-2 mt-2 border-2 border-thirdColor text-thirdColor rounded hover:bg-thirdColor hover:text-primaryColor transition duration-300"
+                                >
+                                    Logout
                                 </button>
-                            </Link>
-                            <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href={"/signup"} className="w-fit ">
-                                <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="block w-full mt-2 text-left px-4 py-2 bg-thirdColor text-primaryColor rounded hover:bg-secondaryColor hover:text-white transition duration-300">
-                                    Sign Up
-                                </button>
-                            </Link>
+                            ) : (
+                                <>
+                                    <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href={"/login"} className="w-fit">
+                                        <button className="block w-full text-left px-4 py-2 mt-2 border-2 border-thirdColor text-thirdColor rounded hover:bg-thirdColor hover:text-primaryColor transition duration-300">
+                                            Login
+                                        </button>
+                                    </Link>
+                                    <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href={"/signup"} className="w-fit">
+                                        <button className="block w-full mt-2 text-left px-4 py-2 bg-thirdColor text-primaryColor rounded hover:bg-secondaryColor hover:text-white transition duration-300">
+                                            Sign Up
+                                        </button>
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 )}
+
             </nav>
         </>
     );

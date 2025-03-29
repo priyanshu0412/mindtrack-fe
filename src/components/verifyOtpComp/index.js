@@ -57,7 +57,7 @@ const VerifyOtpComp = () => {
             .split("; ")
             .find((row) => row.startsWith("authToken="))
             ?.split("=")[1];
-
+        console.log("token", token)
         if (!token || user.email !== email) {
             Swal.fire({
                 icon: "error",
@@ -70,12 +70,13 @@ const VerifyOtpComp = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8080/auth/verify-otp",
+                `${process.env.NEXT_PUBLIC_BE_URL}/auth/verify-otp`,
                 { email: user.email, otp: otp.join("") },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
+                    withCredentials: true,
                 }
             );
 
@@ -101,10 +102,30 @@ const VerifyOtpComp = () => {
         }
     };
 
-    const handleResendOTP = () => {
-        setTimer(60);
-        setResendDisabled(true);
+    const handleResendOTP = async () => {
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BE_URL}/auth/resend-otp`, {
+                email: user?.email,
+            });
+
+            if (response.status === 200) {
+                Swal.fire({
+                    icon: "success",
+                    title: "OTP Resent",
+                    text: "A new OTP has been sent to your email.",
+                });
+                setTimer(60);
+                setResendDisabled(true);
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Resend Failed",
+                text: error.response?.data?.message || "Failed to resend OTP. Try again later.",
+            });
+        }
     };
+
 
     const handleOtpChange = (e, index) => {
         const value = e.target.value;
@@ -157,7 +178,7 @@ const VerifyOtpComp = () => {
                                 onChange={(e) => handleOtpChange(e, index)}
                                 onPaste={handlePasteOtp}
                                 ref={(el) => (inputRefs.current[index] = el)}
-                                className="w-12 h-12 text-center text-lg font-semibold rounded-md border border-gray-300 bg-gray-50 focus:ring-thirdColor focus:border-thirdColor"
+                                className="text-black w-12 h-12 text-center text-lg font-semibold rounded-md border border-gray-300 bg-gray-50 focus:ring-thirdColor focus:border-thirdColor"
                             />
                         ))}
                     </div>

@@ -114,7 +114,7 @@ const Login = () => {
                         )}
                     </div>
                     <Link href={"/forgot-password"} className="w-fit" >
-                        <p className="mt-4">
+                        <p className="mt-4 text-black">
                             Forgot Password ?
                         </p>
                     </Link>

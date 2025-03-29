@@ -3,14 +3,19 @@
 import { useRef, useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import Icon from "../Icon";
+import { useRouter } from "next/navigation";
+import { logout } from "@/store/authSlice";
+
 
 // ---------------------------------------------
 
 const DiaryComponent = () => {
+    const router = useRouter();
+    const dispatch = useDispatch();
 
     const user = useSelector((state) => state.auth.user);
     const token = user?.token;
@@ -28,10 +33,23 @@ const DiaryComponent = () => {
 
     const fetchDiaries = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/diary", {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BE_URL}/api/diary`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setDiaries(response.data.data);
+
+            if (response.status === 200) {
+                setDiaries(response.data.data);
+            } else if (response.status === 401) {
+                dispatch(logout());
+                Swal.fire({
+                    icon: "warning",
+                    title: "Session Expired",
+                    text: "Your session has expired. Please log in again.",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    router.push("/login");
+                });
+            }
         } catch (error) {
             console.error("Error fetching diaries:", error);
         }
@@ -43,18 +61,48 @@ const DiaryComponent = () => {
             return;
         }
 
-        const url = isEditing ? `http://localhost:8080/api/diary/${editingId}` : "http://localhost:8080/api/diary";
+        const url = isEditing
+            ? `${process.env.NEXT_PUBLIC_BE_URL}/api/diary/${editingId}`
+            : `${process.env.NEXT_PUBLIC_BE_URL}/api/diary`;
+
         const method = isEditing ? axios.patch : axios.post;
 
         try {
-            await method(url, { title, content }, { headers: { Authorization: `Bearer ${token}` } });
-            resetForm();
-            fetchDiaries();
+            const response = await method(url, { title, content }, { headers: { Authorization: `Bearer ${token}` } });
+
+            if (response.status === 200 || response.status === 201) {
+                resetForm();
+                fetchDiaries();
+            } else if (response.status === 401) {
+                dispatch(logout());
+                Swal.fire({
+                    icon: "warning",
+                    title: "Session Expired",
+                    text: "Your session has expired. Please log in again.",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    router.push("/login");
+                });
+            }
         } catch (error) {
             console.error("Error saving/updating diary:", error);
-            Swal.fire({ icon: "error", title: "Error", text: "Something went wrong!" });
+
+            if (error.response && error.response.status === 401) {
+                dispatch(logout());
+                Swal.fire({
+                    icon: "warning",
+                    title: "Session Expired",
+                    text: "Your session has expired. Please log in again.",
+                    confirmButtonText: "OK",
+                }).then(() => {
+                    router.push("/login");
+                });
+            } else {
+                Swal.fire({ icon: "error", title: "Error", text: "Something went wrong!" });
+            }
         }
     };
+
 
     const handleDelete = async (id) => {
         Swal.fire({
@@ -68,18 +116,45 @@ const DiaryComponent = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:8080/api/diary/${id}`, {
+                    const response = await axios.delete(`${process.env.NEXT_PUBLIC_BE_URL}/api/diary/${id}`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
-                    fetchDiaries();
-                    Swal.fire({ icon: "success", title: "Deleted!", text: "Your diary entry has been deleted." });
+
+                    if (response.status === 200) {
+                        fetchDiaries();
+                        Swal.fire({ icon: "success", title: "Deleted!", text: "Your diary entry has been deleted." });
+                    } else if (response.status === 401) {
+                        dispatch(logout());
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Session Expired",
+                            text: "Your session has expired. Please log in again.",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            router.push("/login");
+                        });
+                    }
                 } catch (error) {
                     console.error("Error deleting diary:", error);
-                    Swal.fire({ icon: "error", title: "Error", text: "Something went wrong!" });
+
+                    if (error.response && error.response.status === 401) {
+                        dispatch(logout());
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Session Expired",
+                            text: "Your session has expired. Please log in again.",
+                            confirmButtonText: "OK",
+                        }).then(() => {
+                            router.push("/login");
+                        });
+                    } else {
+                        Swal.fire({ icon: "error", title: "Error", text: "Something went wrong!" });
+                    }
                 }
             }
         });
     };
+
 
     const handleView = (diary) => {
         withReactContent(Swal).fire({
@@ -119,8 +194,8 @@ const DiaryComponent = () => {
     };
 
     return (
-        <div className="w-full flex flex-col items-center min-h-screen p-6">
-            <div className="w-full max-w-3xl bg-primaryColor text-white shadow-lg rounded-xl p-6">
+        <div className="w-full flex flex-col items-center min-h-screen p-6 bg-primaryColor">
+            <div className="w-full max-w-3xl bg-white text-thirdColor shadow-lg rounded-xl p-6">
                 <h1 className="text-3xl font-semibold mb-4">Write Your Diary</h1>
                 <input
                     type="text"
@@ -150,7 +225,7 @@ const DiaryComponent = () => {
                     </button>
                 </div>
             </div>
-            <div className="w-full max-w-3xl bg-primaryColor shadow-lg rounded-xl p-6 mt-6">
+            <div className="w-full max-w-3xl bg-white shadow-lg rounded-xl p-6 mt-6">
                 <h2 className="text-2xl font-semibold mb-4 text-thirdColor">Your Diaries</h2>
                 <ul className="space-y-4">
                     {diaries.map((diary) => (
